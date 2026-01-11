@@ -1,249 +1,391 @@
-function login(){
+/**
+ * NOTE: This project is a static frontend demo (no backend).
+ * We keep credentials/demo data in localStorage for continuity only.
+ */
+(function () {
+  'use strict';
 
-    let id = document.getElementById("sid").value;
-    let pass = document.getElementById("pass").value;
-   
-    // بيانات وهمية للاختبار
-    if(id == "1001" && pass == "1234"){
-   
-      localStorage.setItem("studentName","محمد أحمد");
-      localStorage.setItem("studentID","1001");
-      localStorage.setItem("grade","ثالث ثانوي");
-      localStorage.setItem("section","ب");
-      localStorage.setItem("parent","777888999");
-      localStorage.setItem("home","صنعاء");
-     
-      localStorage.setItem("gpa","92%");
-      localStorage.setItem("rate","ممتاز");
-      localStorage.setItem("fees","35,000 ريال");
-   
-      window.location = "student-data.html";
-    }
-   
-    else{
-      alert("رقم الطالب أو كلمة المرور غير صحيحة");
+  function el(id) {
+    return document.getElementById(id);
+  }
+  function val(id) {
+    var e = el(id);
+    return e && typeof e.value === 'string' ? e.value.trim() : '';
+  }
+  function readArray(key) {
+    try {
+      var raw = localStorage.getItem(key);
+      if (!raw) return [];
+      var parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
     }
   }
-  function loginParent(){
+  function writeArray(key, arr) {
+    try {
+      localStorage.setItem(key, JSON.stringify(arr));
+    } catch (e) {
+      // ignore storage failures (private mode / quota)
+    }
+  }
 
-    let phone = document.getElementById("phone").value;
-    let pass = document.getElementById("pass").value;
-   
-    let parents = JSON.parse(localStorage.getItem("parents")) || [];
-   
-    let parent = parents.find(p => p.phone == phone && p.pass == pass);
-   
-    if(!parent){
-      alert("بيانات الدخول غير صحيحة");
+  // ---------- Student ----------
+  function setStudentSession(student) {
+    // Keep backward-compatible keys used by existing pages
+    try {
+      localStorage.setItem('studentName', student.name || '');
+      localStorage.setItem('studentID', student.id || '');
+      localStorage.setItem('grade', student.grade || '');
+      localStorage.setItem('section', student.section || '');
+      localStorage.setItem('parent', student.parentPhone || '');
+      localStorage.setItem('home', student.home || '');
+      localStorage.setItem('gpa', student.gpa || '');
+      localStorage.setItem('rate', student.rate || '');
+      localStorage.setItem('fees', student.fees || '');
+      localStorage.setItem('currentStudent', JSON.stringify(student));
+    } catch (e) {}
+  }
+
+  window.loginStudent = function loginStudent() {
+    var sid = val('sid');
+    var pass = val('pass');
+
+    if (!sid || !pass) {
+      alert('الرجاء إدخال رقم الطالب وكلمة المرور');
       return;
     }
-   
-    // حفظ ولي الأمر الحالي
-    localStorage.setItem("currentParent", JSON.stringify(parent));
-   
-    // الانتقال للوحة الحساب
-    window.location = "parent-dashboard.html";
-   }
-   function loginParent() {
-    let phone = document.getElementById("phone").value.trim();
-    let pass = document.getElementById("pass").value.trim();
 
-    // التحقق من أن الحقول ليست فارغة
-    if (phone === "" || pass === "") {
-        alert("يرجى إدخال رقم الهاتف وكلمة المرور");
-        return;
+    // Prefer registered students from localStorage; fall back to demo account.
+    var students = readArray('students');
+    var student =
+      students.find(function (s) {
+        return s && s.id === sid && s.pass === pass;
+      }) || null;
+
+    if (!student && sid === '1001' && pass === '1234') {
+      student = {
+        id: '1001',
+        pass: '1234',
+        name: 'محمد أحمد',
+        grade: 'ثالث ثانوي',
+        section: 'ب',
+        parentPhone: '777888999',
+        parentName: 'ولي الأمر',
+        home: 'صنعاء',
+        gpa: '92%',
+        rate: 'ممتاز',
+        fees: '35,000 ريال',
+      };
     }
 
-    // التحقق من رقم الهاتف (مثال: 10 أرقام)
-    if (!/^[0-9]{10}$/.test(phone)) {
-        alert("رقم الهاتف يجب أن يكون مكوّن من 10 أرقام");
-        return;
-    }
-
-    // كلمة المرور (مثال بسيط)
-    if (pass.length < 4) {
-        alert("كلمة المرور يجب أن تكون 4 أحرف أو أكثر");
-        return;
-    }
-
-    // تحقق بسيط — يمكنك لاحقاً ربطه بقاعدة بيانات
-    if (phone === "7777777777" && pass === "1234") {
-       
-        window.location.href = "parent-data.html"; // صفحة بعد تسجيل الدخول
-    } else {
-        alert("بيانات الدخول غير صحيحة");
-    }
-}
-function login() {
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-
-  // ضع هنا اسم المستخدم وكلمة المرور الخاصة بالأدمن
-  if(username === "admin" && password === "1234") {
-    // إذا تسجيل الدخول صحيح، يتم التحويل لصفحة التسجيل
-    window.location.href = "registration.html"; 
-  } else {
-    document.getElementById('error-msg').innerText = "اسم المستخدم أو كلمة المرور خاطئة";
-  }
-}
-function login() {
-    const sid = document.getElementById("sid").value;
-    const pass = document.getElementById("pass").value;
-
-    if (sid === "" || pass === "") {
-        alert("الرجاء إدخال رقم الطالب وكلمة المرور");
-        return;
-    }
-
-    // مثال بيانات تجريبية
-    if (sid === "1001" && pass === "1234") {
-        window.location.href = "student-data.html";
-    } else {
-        alert("رقم الطالب أو كلمة المرور غير صحيحة");
-    }
-}
-
-// Admin login: show sidebar/dashboard only after successful admin credentials
-function loginAdmin() {
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value.trim();
-  const err = document.getElementById('error-msg');
-  if (!username || !password) { if(err) err.innerText = 'يرجى إدخال اسم المستخدم وكلمة المرور'; return; }
-  if (username === 'admin' && password === '1234') {
-    try { localStorage.setItem('adminLoggedIn','1'); } catch(e) {}
-    var loginCard = document.getElementById('admin-login-card');
-    var app = document.getElementById('admin-app');
-    if (loginCard) loginCard.hidden = true;
-    if (app) { app.hidden = false; document.querySelector('.sidebar-nav a.dashboard-link')?.focus(); }
-  } else {
-    if(err) err.innerText = 'اسم المستخدم أو كلمة المرور خاطئة';
-  }
-}
-
-// Login from standalone admin login page (admin-login.html)
-function loginAdminPage() {
-  var usernameEl = document.getElementById('username');
-  var passwordEl = document.getElementById('password');
-  var err = document.getElementById('error-msg');
-  var username = usernameEl?.value.trim() || '';
-  var password = passwordEl?.value.trim() || '';
-
-  if (!username || !password) {
-    if (err) { err.style.color = '#c00'; err.innerText = 'يرجى إدخال اسم المستخدم وكلمة المرور'; }
-    usernameEl?.focus();
-    return;
-  }
-
-  // Demo credentials
-  if (username === 'admin' && password === '1234') {
-    try { localStorage.setItem('adminLoggedIn','1'); } catch(e) {}
-    if (err) { err.style.color = '#080'; err.innerText = 'تم تسجيل الدخول — سيتم التحويل...'; }
-    setTimeout(function(){ window.location.href = 'admin.html'; }, 700);
-  } else {
-    if (err) { err.style.color = '#c00'; err.innerText = 'اسم المستخدم أو كلمة المرور خاطئة'; }
-    passwordEl?.focus();
-  }
-}
-
-function logoutAdmin() {
-  try { localStorage.removeItem('adminLoggedIn'); console.log('logoutAdmin: cleared adminLoggedIn'); } catch(e) { console.warn('logoutAdmin: storage error', e); }
-  // Close nav menu/backdrop if open
-  try { toggleNavMenu(false); } catch(e) {}
-  // show inline message and redirect (with fallback param)
-  try {
-    var msg = document.getElementById('adminMsg'); if (msg) msg.innerText = 'تم تسجيل الخروج، جارٍ التحويل...';
-  } catch(e) {}
-  // give user a moment to see message, then redirect to login with loggedout flag
-  setTimeout(function(){ try { window.location.href = 'admin-login.html?loggedout=1'; } catch(e){ console.warn('logout redirect failed', e); } }, 300);
-}
-
-// Toggle sidebar collapsed state and persist in localStorage
-function toggleSidebar() {
-  var sb = document.querySelector('.sidebar');
-  if (!sb) return;
-  sb.classList.toggle('collapsed');
-  try { localStorage.setItem('sidebarCollapsed', sb.classList.contains('collapsed') ? '1' : '0'); } catch(e) {}
-}
-
-// Toggle nav menu (appears from top nav) and add keyboard/outside-close behavior
-function toggleNavMenu(forceOpen) {
-  var menu = document.getElementById('navMenu');
-  var backdrop = document.getElementById('navBackdrop');
-  var btn = document.querySelector('.nav-menu-toggle');
-  if (!menu) return;
-  var isOpen = menu.classList.contains('open');
-  var willOpen = typeof forceOpen === 'boolean' ? forceOpen : !isOpen;
-  if (willOpen) {
-    menu.classList.add('open'); menu.removeAttribute('hidden'); menu.setAttribute('aria-hidden','false');
-    if (backdrop) { backdrop.classList.add('open'); backdrop.removeAttribute('hidden'); }
-    if (btn) btn.setAttribute('aria-expanded','true');
-    setTimeout(function(){ document.querySelector('#navMenu .nav-menu-close')?.focus(); }, 120);
-    document.addEventListener('click', navMenuDocClick);
-    document.addEventListener('keydown', navMenuKeyHandler);
-  } else {
-    menu.classList.remove('open'); menu.setAttribute('aria-hidden','true');
-    if (backdrop) { backdrop.classList.remove('open'); backdrop.setAttribute('hidden',''); }
-    if (btn) btn.setAttribute('aria-expanded','false');
-    setTimeout(function(){ menu.setAttribute('hidden',''); }, 260);
-    document.removeEventListener('click', navMenuDocClick);
-    document.removeEventListener('keydown', navMenuKeyHandler);
-  }
-}
-function navMenuDocClick(e) {
-  var menu = document.getElementById('navMenu');
-  var btn = document.querySelector('.nav-menu-toggle');
-  if (!menu) return;
-  if (menu.contains(e.target) || (btn && btn.contains(e.target))) return;
-  toggleNavMenu(false);
-}
-function navMenuKeyHandler(e) { if (e.key === 'Escape') toggleNavMenu(false); }
-
-// On load: redirect to login if not logged in, otherwise show admin app
-document.addEventListener('DOMContentLoaded', function(){
-  try {
-    if (!localStorage.getItem('adminLoggedIn')) {
-      // Not logged in -> send to login page
-      if (location.pathname.endsWith('admin.html')) {
-        window.location.href = 'admin-login.html';
-      }
+    if (!student) {
+      alert('رقم الطالب أو كلمة المرور غير صحيحة');
       return;
     }
-    // logged in -> show admin app
-    document.getElementById('admin-app')?.removeAttribute('hidden');
-    document.getElementById('admin-login-card')?.setAttribute('hidden','');
 
-    // Restore sidebar collapsed state
-    var collapsed = localStorage.getItem('sidebarCollapsed');
-    if (collapsed === '1') document.querySelector('.sidebar')?.classList.add('collapsed');
+    setStudentSession(student);
+    window.location.href = 'student-data.html';
+  };
 
-    // attach delegated click listener for logout as fallback
-    document.addEventListener('click', function(e){
-      var t = e.target || e.srcElement;
-      if (t && (t.id === 'logoutBtn' || (t.closest && t.closest('#logoutBtn')))) {
-        console.log('delegated click: logoutBtn detected');
-        e.preventDefault();
-        // Clear session and navigate explicitly as a robust fallback
-        try { localStorage.removeItem('adminLoggedIn'); } catch(e) {}
-        try { toggleNavMenu(false); } catch(e) {}
-        // show message if area available
-        try { var msg = document.getElementById('adminMsg'); if (msg) msg.innerText = 'تم تسجيل الخروج، جارٍ التحويل...'; } catch(e) {}
-        // Force navigation using assign (keeps history) and replace as fallback
-        try { window.location.assign('admin-login.html?loggedout=1'); } catch(e) { try { window.location.href = 'admin-login.html?loggedout=1'; } catch(e) {} }
-      }
-    });
+  // Backward compatibility (old pages used onclick="login()")
+  window.login = window.loginStudent;
 
-    // Also attach direct click handler to the logout button to ensure it always works
-    var lb = document.getElementById('logoutBtn');
-    if (lb) {
-      lb.addEventListener('click', function(ev){
-        console.log('logoutBtn direct listener');
-        ev.preventDefault();
-        try { localStorage.removeItem('adminLoggedIn'); } catch(e) {}
-        try { toggleNavMenu(false); } catch(e) {}
-        try { var msg = document.getElementById('adminMsg'); if (msg) msg.innerText = 'تم تسجيل الخروج، جارٍ التحويل...'; } catch(e) {}
-        setTimeout(function(){ try { window.location.href = 'admin-login.html?loggedout=1'; } catch(e) { console.warn('direct logout redirect failed', e); } }, 60);
+  // ---------- Parent ----------
+  window.loginParent = function loginParent() {
+    var phone = val('phone');
+    var pass = val('pass');
+
+    if (!phone || !pass) {
+      alert('يرجى إدخال رقم الهاتف وكلمة المرور');
+      return;
+    }
+
+    if (!/^[0-9]{9,12}$/.test(phone)) {
+      alert('رقم الهاتف غير صحيح');
+      return;
+    }
+
+    // Try explicit parent accounts first
+    var parents = readArray('parents');
+    var parent =
+      parents.find(function (p) {
+        return p && p.phone === phone && p.pass === pass;
+      }) || null;
+
+    // Otherwise allow demo parent login
+    if (!parent && phone === '7777777777' && pass === '1234') {
+      parent = { name: 'ولي أمر تجريبي', phone: phone, address: 'صنعاء', pass: pass };
+    }
+
+    // Or derive parent from registered students (simple fallback)
+    if (!parent) {
+      var students = readArray('students');
+      var s = students.find(function (x) {
+        return x && x.parentPhone === phone;
       });
+      if (s && pass === '1234') {
+        parent = { name: s.parentName || 'ولي الأمر', phone: phone, address: s.home || '', pass: pass };
+      }
     }
 
-  } catch(e) {}
-});
+    if (!parent) {
+      alert('بيانات الدخول غير صحيحة');
+      return;
+    }
+
+    try {
+      localStorage.setItem('currentParent', JSON.stringify(parent));
+    } catch (e) {}
+
+    window.location.href = 'parent-data.html';
+  };
+
+  window.loadParent = function loadParent() {
+    var current = null;
+    try {
+      current = JSON.parse(localStorage.getItem('currentParent') || 'null');
+    } catch (e) {
+      current = null;
+    }
+
+    if (!current) {
+      // No session; send user back to login page
+      window.location.href = 'parent.html';
+      return;
+    }
+
+    var nameEl = el('pname');
+    var phoneEl = el('pphone');
+    var addrEl = el('paddress');
+    if (nameEl) nameEl.textContent = current.name || '';
+    if (phoneEl) phoneEl.textContent = current.phone || '';
+    if (addrEl) addrEl.textContent = current.address || '';
+  };
+
+  // ---------- Registration (Admin adds student) ----------
+  window.addStudent = function addStudent() {
+    // Basic client-side gate: registration should be admin-only in this demo.
+    try {
+      if (!localStorage.getItem('adminLoggedIn')) {
+        alert('هذه الصفحة مخصّصة للمدير. يرجى تسجيل الدخول أولاً.');
+        window.location.href = 'admin-login.html';
+        return;
+      }
+    } catch (e) {}
+
+    var id = val('aid');
+    var pass = val('apass');
+    var name = val('aname');
+    var grade = val('agrade');
+    var section = val('aclass');
+    var parentName = val('aparent');
+    var parentPhone = val('aphone');
+    var fees = val('apay');
+
+    if (!id || !pass || !name) {
+      alert('يرجى إدخال رقم الطالب وكلمة المرور واسم الطالب');
+      return;
+    }
+    if (!/^[0-9]{3,12}$/.test(id)) {
+      alert('رقم الطالب يجب أن يكون أرقاماً فقط');
+      return;
+    }
+    if (pass.length < 4) {
+      alert('كلمة المرور يجب أن تكون 4 أحرف أو أكثر');
+      return;
+    }
+    if (parentPhone && !/^[0-9]{9,12}$/.test(parentPhone)) {
+      alert('رقم هاتف ولي الأمر غير صحيح');
+      return;
+    }
+
+    var students = readArray('students');
+    var exists = students.some(function (s) {
+      return s && s.id === id;
+    });
+    if (exists) {
+      alert('هذا الطالب موجود مسبقاً');
+      return;
+    }
+
+    var student = {
+      id: id,
+      pass: pass,
+      name: name,
+      grade: grade,
+      section: section,
+      parentName: parentName,
+      parentPhone: parentPhone,
+      fees: fees,
+      // Optional fields used by student-data page
+      home: '',
+      gpa: '',
+      rate: '',
+    };
+
+    students.push(student);
+    writeArray('students', students);
+
+    // Create/update parent account (default password for demo)
+    if (parentPhone) {
+      var parents = readArray('parents');
+      var pExists = parents.some(function (p) {
+        return p && p.phone === parentPhone;
+      });
+      if (!pExists) {
+        parents.push({ name: parentName || 'ولي الأمر', phone: parentPhone, address: '', pass: '1234' });
+        writeArray('parents', parents);
+      }
+    }
+
+    alert('تمت إضافة الطالب بنجاح');
+  };
+
+  // ---------- Admin helpers (used by admin.html / admin-login.html) ----------
+  window.loginAdmin = function loginAdmin() {
+    var username = val('username');
+    var password = val('password');
+    var err = el('error-msg');
+
+    if (!username || !password) {
+      if (err) err.innerText = 'يرجى إدخال اسم المستخدم وكلمة المرور';
+      return;
+    }
+    if (username === 'admin' && password === '1234') {
+      try {
+        localStorage.setItem('adminLoggedIn', '1');
+      } catch (e) {}
+
+      var loginCard = el('admin-login-card');
+      var app = el('admin-app');
+      if (loginCard) loginCard.hidden = true;
+      if (app) app.hidden = false;
+    } else {
+      if (err) err.innerText = 'اسم المستخدم أو كلمة المرور خاطئة';
+    }
+  };
+
+  window.loginAdminPage = function loginAdminPage() {
+    var usernameEl = el('username');
+    var passwordEl = el('password');
+    var err = el('error-msg');
+    var username = usernameEl && usernameEl.value ? usernameEl.value.trim() : '';
+    var password = passwordEl && passwordEl.value ? passwordEl.value.trim() : '';
+
+    if (!username || !password) {
+      if (err) {
+        err.style.color = '#c00';
+        err.innerText = 'يرجى إدخال اسم المستخدم وكلمة المرور';
+      }
+      if (usernameEl) usernameEl.focus();
+      return;
+    }
+
+    if (username === 'admin' && password === '1234') {
+      try {
+        localStorage.setItem('adminLoggedIn', '1');
+      } catch (e) {}
+      if (err) {
+        err.style.color = '#080';
+        err.innerText = 'تم تسجيل الدخول — سيتم التحويل...';
+      }
+      setTimeout(function () {
+        window.location.href = 'admin.html';
+      }, 500);
+    } else {
+      if (err) {
+        err.style.color = '#c00';
+        err.innerText = 'اسم المستخدم أو كلمة المرور خاطئة';
+      }
+      if (passwordEl) passwordEl.focus();
+    }
+  };
+
+  window.logoutAdmin = function logoutAdmin() {
+    try {
+      localStorage.removeItem('adminLoggedIn');
+    } catch (e) {}
+    try {
+      window.toggleNavMenu(false);
+    } catch (e) {}
+    setTimeout(function () {
+      window.location.href = 'admin-login.html?loggedout=1';
+    }, 200);
+  };
+
+  window.toggleSidebar = function toggleSidebar() {
+    var sb = document.querySelector('.sidebar');
+    if (!sb) return;
+    sb.classList.toggle('collapsed');
+    try {
+      localStorage.setItem('sidebarCollapsed', sb.classList.contains('collapsed') ? '1' : '0');
+    } catch (e) {}
+  };
+
+  function navMenuDocClick(e) {
+    var menu = el('navMenu');
+    var btn = document.querySelector('.nav-menu-toggle');
+    if (!menu) return;
+    if (menu.contains(e.target) || (btn && btn.contains(e.target))) return;
+    window.toggleNavMenu(false);
+  }
+  function navMenuKeyHandler(e) {
+    if (e && e.key === 'Escape') window.toggleNavMenu(false);
+  }
+
+  window.toggleNavMenu = function toggleNavMenu(forceOpen) {
+    var menu = el('navMenu');
+    var backdrop = el('navBackdrop');
+    var btn = document.querySelector('.nav-menu-toggle');
+    if (!menu) return;
+
+    var isOpen = menu.classList.contains('open');
+    var willOpen = typeof forceOpen === 'boolean' ? forceOpen : !isOpen;
+
+    if (willOpen) {
+      menu.classList.add('open');
+      menu.removeAttribute('hidden');
+      menu.setAttribute('aria-hidden', 'false');
+      if (backdrop) {
+        backdrop.classList.add('open');
+        backdrop.removeAttribute('hidden');
+      }
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+      document.addEventListener('click', navMenuDocClick);
+      document.addEventListener('keydown', navMenuKeyHandler);
+    } else {
+      menu.classList.remove('open');
+      menu.setAttribute('aria-hidden', 'true');
+      if (backdrop) {
+        backdrop.classList.remove('open');
+        backdrop.setAttribute('hidden', '');
+      }
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+      menu.setAttribute('hidden', '');
+      document.removeEventListener('click', navMenuDocClick);
+      document.removeEventListener('keydown', navMenuKeyHandler);
+    }
+  };
+
+  // Admin auto-gating (only relevant on admin.html)
+  document.addEventListener('DOMContentLoaded', function () {
+    try {
+      if (!localStorage.getItem('adminLoggedIn')) {
+        if (String(location.pathname || '').endsWith('admin.html')) {
+          window.location.href = 'admin-login.html';
+        }
+        return;
+      }
+
+      var app = el('admin-app');
+      if (app) app.removeAttribute('hidden');
+
+      // Restore sidebar collapsed state
+      if (localStorage.getItem('sidebarCollapsed') === '1') {
+        var sb = document.querySelector('.sidebar');
+        if (sb) sb.classList.add('collapsed');
+      }
+    } catch (e) {}
+  });
+})();

@@ -2,14 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
  <meta charset="utf-8">
- <link rel="stylesheet" href="Style.css/registration.css">
+ <link rel="stylesheet" href="../Style.css/registration.css">
  <title>التسجيل</title>
 </head>
 
 <body>
 
 <nav>
-    <img src="images/logo.jpg" class="logo" alt="شعار المدرسة">   
+    <img src="../images/logo.jpg" class="logo" alt="شعار المدرسة">   
  <a href="index.html"> الصفحة الرئيسية </a>
 </nav>
 
@@ -21,20 +21,21 @@
        
         <h2>بيانات التسجيل</h2>
        
-        <input id="aid" placeholder="رقم الطالب">
-<input id="apass" placeholder="كلمة المرور">
-<input id="aname" placeholder="اسم الطالب">
+        <input id="aid" inputmode="numeric" autocomplete="off" placeholder="رقم الطالب">
+<input id="apass" type="password" autocomplete="new-password" placeholder="كلمة المرور">
+<input id="aname" autocomplete="name" placeholder="اسم الطالب">
 <input id="agrade" placeholder="الصف">
 <input id="aclass" placeholder="الشعبة">
-<input id="aparent" placeholder="ولي الأمر">
-<input id="aphone" placeholder="هاتف ولي الأمر">
-<input id="apay" placeholder="المبلغ المستحق">
+<input id="aparent" autocomplete="name" placeholder="ولي الأمر">
+<input id="aphone" inputmode="numeric" autocomplete="tel" placeholder="هاتف ولي الأمر">
+<input id="apay" inputmode="numeric" placeholder="المبلغ المستحق">
 
 
 <button onclick="addStudent()">إضافة الطالب</button>
 
 </div>
 </div>
+<script src="../js/script.js"></script>
 <footer>
     <div class="footer-container">
         <h3>مدرستي</h3>
