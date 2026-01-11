@@ -12,8 +12,35 @@
 <nav>
     <img src="../images/logo.jpg" class="logo" alt="شعار المدرسة">
 <a href="index.html">الرئيسية</a>
+<button type="button" class="nav-menu-toggle" aria-controls="navMenu" aria-expanded="false" onclick="toggleNavMenu()">
+  ☰ القائمة
+</button>
 <button id="forceShow" class="debug-btn" style="display:none;margin-inline-start:10px">عرض اللوحة (اختبار)</button>
    </nav>
+
+<!-- Nav overlay menu (used as employee dashboard navigation) -->
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+<aside id="navMenu" class="nav-menu" hidden aria-hidden="true">
+  <button type="button" class="nav-menu-close" onclick="toggleNavMenu(false)" aria-label="إغلاق القائمة">×</button>
+  <div class="nav-menu-inner">
+    <div class="sidebar-brand">بوابة الموظف</div>
+    <nav class="sidebar-nav" aria-label="قائمة لوحة التحكم">
+      <a href="#" class="active dashboard-link" data-target="dashboard-section">
+        <span class="nav-icon">📊</span><span class="nav-text">لوحة التحكم</span>
+      </a>
+      <a href="#" data-target="students-section">
+        <span class="nav-icon">🎓</span><span class="nav-text">إدارة الطلاب</span>
+      </a>
+      <a href="#" data-target="registrations-section">
+        <span class="nav-icon">📝</span><span class="nav-text">التسجيلات</span>
+      </a>
+      <a href="registration.html">
+        <span class="nav-icon">➕</span><span class="nav-text">إضافة طالب</span>
+      </a>
+      <button id="logoutBtn" class="logout-btn" type="button">تسجيل الخروج</button>
+    </nav>
+  </div>
+</aside>
 
 <script>
   // Redirect to login page if admin is not logged in (but allow test button)
@@ -95,32 +122,126 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Sample data and rendering for dashboard
+  // Dashboard data rendering (prefers localStorage; falls back to demo)
   (function(){
-    // Fill recent registrations table with sample rows
-    var recent = [
-      {name:'أحمد محمد', grade:'الصف الثالث', date:'2025-09-01', status:'مؤكّد'},
-      {name:'سارة علي', grade:'الصف الثاني', date:'2025-08-28', status:'مؤقّت'},
-      {name:'خالد سمير', grade:'الصف الرابع', date:'2025-08-25', status:'مؤكّد'},
-      {name:'ليلى حسن', grade:'الصف الأول', date:'2025-08-20', status:'مؤقّت'}
-    ];
-    var tbody = document.querySelector('#recentTable tbody');
-    recent.forEach(function(r){
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td>'+r.name+'</td><td>'+r.grade+'</td><td>'+r.date+'</td><td>'+r.status+'</td>';
-      tbody.appendChild(tr);
-    });
+    function safeParseArray(key) {
+      try {
+        var raw = localStorage.getItem(key);
+        if (!raw) return [];
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+    function fmtDate(iso){
+      try {
+        var d = new Date(iso);
+        if (isNaN(d.getTime())) return '';
+        return d.toISOString().slice(0,10);
+      } catch(e){ return ''; }
+    }
+    function monthKey(iso){
+      try {
+        var d = new Date(iso);
+        if (isNaN(d.getTime())) return '';
+        return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+      } catch(e){ return ''; }
+    }
 
-    // Chart: monthly signups
+    var students = safeParseArray('students');
+    // Stats
+    var studentsEl = document.getElementById('stat-students');
+    if (studentsEl) studentsEl.textContent = String(students.length || 0);
+
+    // New signups in last 30 days (based on createdAt)
+    var now = Date.now();
+    var signups30 = 0;
+    for (var i=0; i<students.length; i++){
+      var s = students[i];
+      if (!s || !s.createdAt) continue;
+      var t = new Date(s.createdAt).getTime();
+      if (!isNaN(t) && (now - t) <= 30*24*60*60*1000) signups30++;
+    }
+    var signupsEl = document.getElementById('stat-signups');
+    if (signupsEl) signupsEl.textContent = String(signups30);
+
+    // Recent registrations table
+    var tbody = document.querySelector('#recentTable tbody');
+    if (tbody) tbody.innerHTML = '';
+
+    var recent = students
+      .filter(function(s){ return s && s.createdAt; })
+      .sort(function(a,b){ return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(); })
+      .slice(0, 6)
+      .map(function(s){
+        return { name: s.name || '-', grade: s.grade || '-', date: fmtDate(s.createdAt), status: 'مؤكّد' };
+      });
+
+    if (recent.length === 0) {
+      // fallback demo rows
+      recent = [
+        {name:'أحمد محمد', grade:'الصف الثالث', date:'2025-09-01', status:'مؤكّد'},
+        {name:'سارة علي', grade:'الصف الثاني', date:'2025-08-28', status:'مؤقّت'},
+        {name:'خالد سمير', grade:'الصف الرابع', date:'2025-08-25', status:'مؤكّد'},
+        {name:'ليلى حسن', grade:'الصف الأول', date:'2025-08-20', status:'مؤقّت'}
+      ];
+    }
+
+    if (tbody) {
+      for (var r=0; r<recent.length; r++){
+        var row = recent[r];
+        var tr = document.createElement('tr');
+        var td1 = document.createElement('td'); td1.textContent = row.name;
+        var td2 = document.createElement('td'); td2.textContent = row.grade;
+        var td3 = document.createElement('td'); td3.textContent = row.date;
+        var td4 = document.createElement('td'); td4.textContent = row.status;
+        tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4);
+        tbody.appendChild(tr);
+      }
+    }
+
+    // Chart: signups grouped by month (last 6 months)
+    var counts = {};
+    for (var j=0; j<students.length; j++){
+      var sj = students[j];
+      if (!sj || !sj.createdAt) continue;
+      var key = monthKey(sj.createdAt);
+      if (!key) continue;
+      counts[key] = (counts[key] || 0) + 1;
+    }
+    // build last 6 months keys
+    var keys = [];
+    var d0 = new Date();
+    d0.setDate(1);
+    for (var k=5; k>=0; k--){
+      var d = new Date(d0.getFullYear(), d0.getMonth()-k, 1);
+      var mk = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+      keys.push(mk);
+    }
+    var labels = keys.map(function(mk){
+      var parts = mk.split('-');
+      var y = parts[0], m = parts[1];
+      return m + '/' + y;
+    });
+    var data = keys.map(function(mk){ return counts[mk] || 0; });
+
+    // If no real data, keep demo chart values
+    var hasReal = data.some(function(x){ return x > 0; });
+    if (!hasReal) {
+      labels = ['يناير','فبراير','مارس','أبريل','مايو','يونيو'];
+      data = [12, 19, 8, 15, 22, 18];
+    }
+
     var ctx = document.getElementById('regChart');
-    if (ctx) {
-      var chart = new Chart(ctx, {
+    if (ctx && typeof Chart !== 'undefined') {
+      new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['يناير','فبراير','مارس','أبريل','مايو','يونيو'],
+          labels: labels,
           datasets: [{
             label: 'تسجيلات',
-            data: [12, 19, 8, 15, 22, 18],
+            data: data,
             backgroundColor: 'rgba(30,144,255,0.8)'
           }]
         },
@@ -133,12 +254,28 @@
 <!-- additional admin sections -->
 <section id="students-section" class="admin-dashboard" hidden>
   <h3>إدارة الطلاب</h3>
-  <p>محتوى إدارة الطلاب سيُعرض هنا.</p>
+  <div class="dash-table" style="margin-top:12px">
+    <h3 style="margin-bottom:10px">قائمة الطلاب</h3>
+    <table id="studentsTable">
+      <thead>
+        <tr><th>الاسم</th><th>رقم الطالب</th><th>الصف</th><th>الشعبة</th><th>هاتف ولي الأمر</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 </section>
 
 <section id="registrations-section" class="admin-dashboard" hidden>
   <h3>قائمة التسجيلات</h3>
-  <p>تفاصيل التسجيلات وإدارتها.</p>
+  <div class="dash-table" style="margin-top:12px">
+    <h3 style="margin-bottom:10px">التسجيلات (من localStorage)</h3>
+    <table id="registrationsTable">
+      <thead>
+        <tr><th>الاسم</th><th>الصف</th><th>التاريخ</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 </section>
 
 </main>
@@ -151,10 +288,10 @@
     links.forEach(function(a){
       a.addEventListener('click', function(e){
         e.preventDefault();
-        links.forEach(l=>l.classList.remove('active'));
+        links.forEach(function(l){ l.classList.remove('active'); });
         a.classList.add('active');
         var target = a.getAttribute('data-target');
-        document.querySelectorAll('#admin-app .admin-dashboard').forEach(s=>s.hidden = true);
+        document.querySelectorAll('#admin-app .admin-dashboard').forEach(function(s){ s.hidden = true; });
         var el = document.getElementById(target);
         if(el) el.hidden = false;
         // close nav menu after click
@@ -167,6 +304,59 @@
     // Attach logout handler to the button (if JS loaded)
     var logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) logoutBtn.addEventListener('click', function(e){ e.preventDefault(); logoutAdmin(); });
+
+    // Fill students/registrations tables from localStorage
+    function safeParseArray(key) {
+      try {
+        var raw = localStorage.getItem(key);
+        if (!raw) return [];
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+    function fmtDate(iso){
+      try {
+        var d = new Date(iso);
+        if (isNaN(d.getTime())) return '';
+        return d.toISOString().slice(0,10);
+      } catch(e){ return ''; }
+    }
+    var students = safeParseArray('students');
+
+    var stBody = document.querySelector('#studentsTable tbody');
+    if (stBody) {
+      stBody.innerHTML = '';
+      students.forEach(function(s){
+        if (!s) return;
+        var tr = document.createElement('tr');
+        function td(v){ var x=document.createElement('td'); x.textContent = v || '-'; return x; }
+        tr.appendChild(td(s.name));
+        tr.appendChild(td(s.id));
+        tr.appendChild(td(s.grade));
+        tr.appendChild(td(s.section));
+        tr.appendChild(td(s.parentPhone));
+        stBody.appendChild(tr);
+      });
+    }
+
+    var regBody = document.querySelector('#registrationsTable tbody');
+    if (regBody) {
+      regBody.innerHTML = '';
+      students
+        .slice()
+        .sort(function(a,b){ return new Date(b.createdAt||0).getTime() - new Date(a.createdAt||0).getTime(); })
+        .forEach(function(s){
+          if (!s) return;
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td'); td1.textContent = s.name || '-';
+          var td2 = document.createElement('td'); td2.textContent = s.grade || '-';
+          var td3 = document.createElement('td'); td3.textContent = fmtDate(s.createdAt);
+          tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+          regBody.appendChild(tr);
+        });
+    }
 
     // small area to show inline messages (for debugging/user feedback)
     if (!document.getElementById('adminMsg')) {

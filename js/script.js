@@ -218,6 +218,7 @@
       parentName: parentName,
       parentPhone: parentPhone,
       fees: fees,
+      createdAt: new Date().toISOString(),
       // Optional fields used by student-data page
       home: '',
       gpa: '',
