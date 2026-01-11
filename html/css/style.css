@@ -1,0 +1,63 @@
+/* Site theme variables */
+:root{
+  --site-primary: #0d6efd;
+  --site-primary-dark: #0b5ed7;
+  --site-bg: #ffffff;
+  --site-text: #111111;
+}
+
+label {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Use theme colors */
+body { color: var(--site-text); background-color: var(--site-bg); }
+
+/* Buttons (override some Bootstrap defaults using CSS variables) */
+.btn-primary {
+  background-color: var(--site-primary) !important;
+  border-color: var(--site-primary) !important;
+}
+.btn-primary:hover { background-color: var(--site-primary-dark) !important; border-color: var(--site-primary-dark) !important; }
+
+/* Announcement uses primary gradient */
+.announcement { background: linear-gradient(90deg, var(--site-primary), var(--site-primary-dark)) !important; }
+
+/* Links using primary color */
+a { color: var(--site-primary); }
+
+/* Optional: make body text readable when background changes */
+/* body { color: #111; } */
+
+/* Navbar change-color button */
+.btn-change-color {
+  padding: .35rem .65rem;
+  border-radius: .375rem;
+  font-weight: 600;
+  border: 1px solid var(--site-primary);
+  color: var(--site-primary);
+  background: transparent;
+  text-decoration: none;
+}
+.btn-change-color:hover,
+.btn-change-color:focus {
+  background: var(--site-primary);
+  color: #fff;
+}
+
+/* Ensure centered nav item aligns nicely */
+.nav-center { display:flex; justify-content:center; align-items:center; }
+
+/* Force button visible and inline in navbar */
+.navbar .btn-change-color { display:inline-block !important; margin:0 .25rem !important; }
+.navbar .btn-change-color { border-width:2px; }
+
+/* On very small screens, make sure the button is visible in collapsed menu */
+@media (max-width:575.98px){
+  .navbar .btn-change-color { width:100%; text-align:center; }
+}
+

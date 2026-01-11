@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../Style.css/admin.css">
+<title>لوحة المدير - مدرستي</title>
+</head>
+
+<body>
+
+<nav>
+    <img src="../images/logo.jpg" class="logo" alt="شعار المدرسة">
+<a href="index.html">الرئيسية</a>
+<button id="forceShow" class="debug-btn" style="display:none;margin-inline-start:10px">عرض اللوحة (اختبار)</button>
+   </nav>
+
+<script>
+  // Redirect to login page if admin is not logged in (but allow test button)
+  document.addEventListener('DOMContentLoaded', function(){
+    try {
+      var force = document.getElementById('forceShow');
+      // show debug button if ?dev=1 in URL
+      try { if (/dev=1/.test(location.search)) { force && (force.style.display='inline-block'); } } catch(e) {}
+      if (!localStorage.getItem('adminLoggedIn')) {
+        // if dev button visible the user can force show, otherwise redirect
+        if (!force || force.style.display !== 'inline-block') {
+          window.location.href = 'admin-login.html';
+          return;
+        }
+      } else {
+        console.log('admin.loggedIn detected on page load');
+      }
+      if (force) {
+        force.addEventListener('click', function(){ try { localStorage.setItem('adminLoggedIn','1'); } catch(e){}; window.location.reload(); });
+      }
+    } catch(e) { console.warn('admin init check failed', e); }
+  });
+</script>
+
+<div class="container">
+
+<!-- login moved to separate page (admin-login.html) -->
+
+</div>
+
+<div id="admin-app" class="admin-wrapper" hidden>
+
+  <main class="main-area">
+    <div id="adminMsg" aria-live="polite"></div>
+<section class="admin-dashboard" id="dashboard-section">
+  <div class="dash-header">
+    <h2>لوحة التحكم</h2>
+    <p class="dash-sub">نظرة عامة سريعة على نشاط المدرسة</p>
+  </div> 
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-title">الطلاب</div>
+      <div class="stat-value" id="stat-students">1,240</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">المعلمون</div>
+      <div class="stat-value" id="stat-teachers">72</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">الفصول</div>
+      <div class="stat-value" id="stat-classes">28</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">تسجيلات جديدة</div>
+      <div class="stat-value" id="stat-signups">18</div>
+    </div>
+  </div>
+
+  <div class="dash-main">
+    <div class="dash-table">
+      <h3>التسجيلات الأخيرة</h3>
+      <table aria-describedby="recent-registrations" id="recentTable">
+        <thead>
+          <tr><th>الاسم</th><th>الصف</th><th>التاريخ</th><th>الحالة</th></tr>
+        </thead>
+        <tbody>
+          <!-- rows inserted by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="dash-chart">
+      <h3>التسجيلات الشهرية</h3>
+      <canvas id="regChart" aria-label="رسم بياني للتسجيلات" role="img" height="200"></canvas>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Sample data and rendering for dashboard
+  (function(){
+    // Fill recent registrations table with sample rows
+    var recent = [
+      {name:'أحمد محمد', grade:'الصف الثالث', date:'2025-09-01', status:'مؤكّد'},
+      {name:'سارة علي', grade:'الصف الثاني', date:'2025-08-28', status:'مؤقّت'},
+      {name:'خالد سمير', grade:'الصف الرابع', date:'2025-08-25', status:'مؤكّد'},
+      {name:'ليلى حسن', grade:'الصف الأول', date:'2025-08-20', status:'مؤقّت'}
+    ];
+    var tbody = document.querySelector('#recentTable tbody');
+    recent.forEach(function(r){
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td>'+r.name+'</td><td>'+r.grade+'</td><td>'+r.date+'</td><td>'+r.status+'</td>';
+      tbody.appendChild(tr);
+    });
+
+    // Chart: monthly signups
+    var ctx = document.getElementById('regChart');
+    if (ctx) {
+      var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['يناير','فبراير','مارس','أبريل','مايو','يونيو'],
+          datasets: [{
+            label: 'تسجيلات',
+            data: [12, 19, 8, 15, 22, 18],
+            backgroundColor: 'rgba(30,144,255,0.8)'
+          }]
+        },
+        options: { responsive:true, scales:{ y:{ beginAtZero:true } }, locale: 'ar' }
+      });
+    }
+  })();
+</script>
+
+<!-- additional admin sections -->
+<section id="students-section" class="admin-dashboard" hidden>
+  <h3>إدارة الطلاب</h3>
+  <p>محتوى إدارة الطلاب سيُعرض هنا.</p>
+</section>
+
+<section id="registrations-section" class="admin-dashboard" hidden>
+  <h3>قائمة التسجيلات</h3>
+  <p>تفاصيل التسجيلات وإدارتها.</p>
+</section>
+
+</main>
+</div>
+
+<script>
+  // Nav/menu navigation: show/hide sections and close nav menu after selection
+  document.addEventListener('DOMContentLoaded', function(){
+    var links = document.querySelectorAll('#navMenu .sidebar-nav a[data-target]');
+    links.forEach(function(a){
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        links.forEach(l=>l.classList.remove('active'));
+        a.classList.add('active');
+        var target = a.getAttribute('data-target');
+        document.querySelectorAll('#admin-app .admin-dashboard').forEach(s=>s.hidden = true);
+        var el = document.getElementById(target);
+        if(el) el.hidden = false;
+        // close nav menu after click
+        toggleNavMenu(false);
+      });
+    });
+    // Close on backdrop click
+    document.getElementById('navBackdrop')?.addEventListener('click', function(){ toggleNavMenu(false); });
+
+    // Attach logout handler to the button (if JS loaded)
+    var logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) logoutBtn.addEventListener('click', function(e){ e.preventDefault(); logoutAdmin(); });
+
+    // small area to show inline messages (for debugging/user feedback)
+    if (!document.getElementById('adminMsg')) {
+      var msg = document.createElement('div'); msg.id = 'adminMsg'; msg.style.margin = '8px 0'; document.querySelector('.main-area')?.insertBefore(msg, document.querySelector('.main-area').firstChild);
+    }
+  });
+</script>
+
+<script src="../js/script.js"></script>
+<script>
+  // Fallback: if admin session exists but main script didn't run yet, show admin app and report status
+  try{
+    var msgEl = document.getElementById('adminMsg');
+    if (localStorage.getItem('adminLoggedIn')) {
+      console.log('Fallback: adminLoggedIn present — showing admin app');
+      document.getElementById('admin-app')?.removeAttribute('hidden');
+      if (msgEl) { msgEl.innerText = 'مرحباً — اللوحة ظاهرة (وضع الاختبار)'; }
+    } else {
+      console.log('Fallback: adminLoggedIn NOT present — staying on login');
+      if (msgEl) { msgEl.innerText = 'لم يتم تسجيل الدخول بعد؛ انتقل إلى صفحة الدخول.'; }
+    }
+  }catch(e){ console.warn('Fallback error', e); }
+</script>
+<footer>
+   <div class="footer-container">
+       <h3>مدرستي</h3>
+       <p>نهدف إلى تقديم أفضل الخدمات التعليمية للطلاب.</p>
+
+       <ul class="footer-links">
+           <li><a href="about.html">عن المدرسة</a></li>
+           <li><a href="contact.html">التواصل</a></li>
+           
+       </ul>
+
+       <p class="copy">© 2025 جميع الحقوق محفوظة</p>
+   </div>
+</footer>
+</body>
+</html>

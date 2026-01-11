@@ -1,0 +1,158 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Tajawal", sans-serif;
+  transition: all 0.3s ease;
+}
+
+body {
+  background: #f2f6fc;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Navbar */
+nav {
+  background: linear-gradient(90deg, #1e90ff, #0077cc);
+  padding: 15px 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+nav .logo {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+nav a:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.1);
+}
+
+/* Container */
+.container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Card */
+.card {
+  background: linear-gradient(135deg, #ffffff, #f0f8ff);
+  padding: 30px 25px;
+  border-radius: 20px;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+.card .icon {
+  font-size: 60px;
+  margin-bottom: 20px;
+  color: #1e90ff;
+}
+
+.card:hover .icon {
+  transform: rotate(10deg) scale(1.1);
+  color: #0077cc;
+}
+
+.card h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 20px;
+}
+
+.card p {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.card span {
+  font-weight: 600;
+  color: #0077cc;
+}
+
+/* Footer */
+footer {
+  background: linear-gradient(90deg, #1e90ff, #0077cc);
+  padding: 50px 20px;
+  color: #fff;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.footer-container h3 {
+  font-size: 26px;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.footer-container p {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.footer-links {
+  list-style: none;
+  margin-bottom: 20px;
+}
+
+.footer-links li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.footer-links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.footer-links a:hover {
+  color: #ffd700;
+  text-shadow: 0 0 5px #ffd700;
+  transform: scale(1.1);
+}
+
+.copy {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+  }
+
+  .card {
+    width: 100%;
+  }
+}

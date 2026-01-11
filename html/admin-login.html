@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تسجيل دخول المدير - مدرستي</title>
+  <link rel="stylesheet" href="../Style.css/admin.css">
+</head>
+<body>
+<nav>
+  <img src="../images/logo.jpg" class="logo" alt="شعار المدرسة">
+  <a href="index.html">الرئيسية</a>
+</nav>
+
+<main class="container">
+  <div class="card">
+    <div class="icon">👤</div>
+    <h2>تسجيل دخول المدير</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم">
+    <input type="password" id="password" placeholder="كلمة المرور">
+    <button onclick="loginAdminPage()">دخول</button>
+    <div id="error-msg" style="color:#c00;margin-top:8px;"></div>
+    <p style="margin-top:12px;color:#555;font-size:14px">(تجريبي) اسم المستخدم: <strong>admin</strong> — كلمة المرور: <strong>1234</strong></p>
+  </div>
+</main>
+
+<script src="../js/script.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    try {
+      // If arrived from logout fallback (admin-login.html?loggedout=1) clear flag and show message
+      var params = new URLSearchParams(location.search);
+      if (params.get('loggedout') === '1') {
+        try { localStorage.removeItem('adminLoggedIn'); } catch(e) {}
+        var err = document.getElementById('error-msg');
+        if (err) { err.style.color = '#080'; err.innerText = 'تم تسجيل الخروج بنجاح'; }
+      }
+
+      if (localStorage.getItem('adminLoggedIn')) {
+        window.location.href = 'admin.html';
+        return;
+      }
+    } catch(e) {}
+    document.getElementById('username')?.focus();
+  });
+</script>
+
+<footer>
+  <div class="footer-container">
+      <h3>مدرستي</h3>
+      <p>نهدف إلى تقديم أفضل الخدمات التعليمية للطلاب.</p>
+      <ul class="footer-links">
+          <li><a href="about.html">عن المدرسة</a></li>
+          <li><a href="contact.html">التواصل</a></li>
+      </ul>
+      <p class="copy">© 2025 جميع الحقوق محفوظة</p>
+  </div>
+</footer>
+</body>
+</html>

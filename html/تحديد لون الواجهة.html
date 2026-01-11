@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/Style.css/index.style.css" rel="stylesheet">
+  <title>اختيار لون الواجهة</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { transition: background-color 0.3s; font-family: Arial, sans-serif; padding:20px; }
+    .container{max-width:700px;margin:0 auto}
+    label{display:block;margin-bottom:8px}
+    a { color: #0d6efd; text-decoration: none }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>اختيار لون الواجهة</h1>
+    <label for="colorPicker">اختر لون الخلفية:</label>
+    <input type="color" id="colorPicker" name="color">
+
+    <label for="primaryPicker" style="margin-top:12px;">اختر اللون الأساسي للموقع:</label>
+    <input type="color" id="primaryPicker" value="#0d6efd">
+
+    <div style="margin-top:14px">
+      <button id="saveBtn" class="btn btn-primary">حفظ</button>
+      <button id="resetBtn" class="btn btn-secondary">إعادة الافتراضي</button>
+    </div>
+
+    <p style="margin-top:18px"><a href="index.html">العودة إلى الصفحة الرئيسية</a></p>
+  </div>
+
+  <script>
+    const colorPicker = document.getElementById('colorPicker');
+    const primaryPicker = document.getElementById('primaryPicker');
+    const saveBtn = document.getElementById('saveBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const savedBg = localStorage.getItem('bgColor') || '#ffffff';
+    const savedPrimary = localStorage.getItem('primaryColor') || getComputedStyle(document.documentElement).getPropertyValue('--site-primary').trim() || '#0d6efd';
+
+    colorPicker.value = savedBg;
+    primaryPicker.value = savedPrimary;
+    document.body.style.backgroundColor = savedBg;
+    document.documentElement.style.setProperty('--site-primary', savedPrimary);
+
+    function darkenHex(hex, percent){
+      var c = hex.replace('#','');
+      var num = parseInt(c,16);
+      var r = (num >> 16) & 0xFF;
+      var g = (num >> 8) & 0xFF;
+      var b = num & 0xFF;
+      r = Math.max(0, Math.min(255, Math.floor(r * (1 - percent))));
+      g = Math.max(0, Math.min(255, Math.floor(g * (1 - percent))));
+      b = Math.max(0, Math.min(255, Math.floor(b * (1 - percent))));
+      return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+    }
+
+    primaryPicker.addEventListener('input', (e)=>{
+      document.documentElement.style.setProperty('--site-primary', e.target.value);
+      document.documentElement.style.setProperty('--site-primary-dark', darkenHex(e.target.value,0.12));
+    });
+
+    colorPicker.addEventListener('input', (event) => {
+      document.body.style.backgroundColor = event.target.value;
+    });
+
+    saveBtn.addEventListener('click', ()=>{
+      var bg = colorPicker.value;
+      var primary = primaryPicker.value;
+      try { localStorage.setItem('bgColor', bg); localStorage.setItem('primaryColor', primary); } catch(e){}
+      document.documentElement.style.setProperty('--site-bg', bg);
+      document.documentElement.style.setProperty('--site-primary', primary);
+      try { document.documentElement.style.setProperty('--site-primary-dark', darkenHex(primary,0.12)); } catch(e){}
+      alert('تم الحفظ');
+    });
+
+    resetBtn.addEventListener('click', ()=>{
+      document.body.style.backgroundColor = '';
+      document.documentElement.style.removeProperty('--site-primary');
+      document.documentElement.style.removeProperty('--site-primary-dark');
+      try { localStorage.removeItem('bgColor'); localStorage.removeItem('primaryColor'); } catch(e){}
+      colorPicker.value = '#ffffff';
+      primaryPicker.value = '#0d6efd';
+    });
+  </script>
+  
+</body>
+</html>

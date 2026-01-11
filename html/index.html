@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+ <link rel="stylesheet" href="../Style.css/index.style.css">
+ <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>مدرستي</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid">
+  <img src="../images/logo.jpg" class="logo" alt="شعار المدرسة">
+  <h1>مدرستي</h1>
+  <a class="navbar-brand" href="#"></a>
+  <!-- أيقونة ☰ -->
+    <button class="navbar-toggler" type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#pagesMenu"
+      aria-controls="pagesMenu"
+      aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- القائمة -->
+    <div class="collapse navbar-collapse" id="pagesMenu">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+        <li class="nav-item"> <a class="nav-link" href="student.html">بوابة الطالب</a></li>
+        <li class="nav-item"> <a class="nav-link" href="parent.html">بوابة ولي الامر</a></li>
+
+        <li class="nav-item"> <a class="nav-link" href="admin.html">بوابة الموظف</a></li>
+        <li class="nav-item"> <a class="nav-link" href="schedule.html">الجداول </a></li>
+        <li class="nav-item"> <a class="nav-link" href="تحديد لون الواجهة.html">تحديد لون الواجهة</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Announcement banner -->
+<div class="announcement" role="region" aria-label="إعلان مهم">
+  <div class="announce-content">
+    <strong>إعلان:</strong> التسجيل مستمر للعام الدراسي القادم — احجز مقعدك الآن!
+  </div>
+  <div class="announce-actions">
+    <a href="contact.html" class="btn btn-announce">تواصل معنا</a>
+    <button id="openColorModal" class="btn btn-announce">غير اللون</button>
+    <button class="announce-close" aria-label="إغلاق الإعلان">&times;</button>
+  </div>
+</div>
+
+<!-- Color modal -->
+<div class="modal fade" id="colorModal" tabindex="-1" aria-labelledby="colorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="colorModalLabel">اختر لون الواجهة</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <div class="modal-body">
+        <label for="modalColorPicker">اختر لون الخلفية:</label>
+        <input type="color" id="modalColorPicker" value="#0d6efd">
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="resetColorBtn" class="btn btn-secondary">إعادة الافتراضي</button>
+        <button type="button" id="saveColorBtn" class="btn btn-announce" data-bs-dismiss="modal">حفظ</button>
+      </div>
+    </div>
+    <button type="button" data-bs-target="#mySlider" data-bs-slide-to="1" aria-label="الشريحة 2"></button>
+    <button type="button" data-bs-target="#mySlider" data-bs-slide-to="2" aria-label="الشريحة 3"></button>
+  </div>
+
+  <div class="carousel-inner">
+
+    <div class="carousel-item active">
+      <img src="../images/image-one.jpg" class="d-block w-100" alt="صورة 1">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>مرحباً بكم في مدرستي</h5>
+        <p>بيئة تعليمية آمنة ومحفّزة للتعلّم.</p>
+        <a href="about.html" class="btn btn-primary">تعرف علينا</a>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <img src="../images/image-two.jpg" class="d-block w-100" alt="صورة 2">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>أنشطة مدرسية متنوعة</h5>
+        <p>مسابقات، رحلات، وفعاليات تعليميّة وترفيهيّة.</p>
+        <a href="activities.html" class="btn btn-primary">عرض الأنشطة</a>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <img src="../images/image-three.jpg" class="d-block w-100" alt="صورة 3">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>النتائج والجداول بسهولة</h5>
+        <p>اطّلع على نتائجك وجداولك الدراسية بنقرة واحدة.</p>
+        <a href="student.html" class="btn btn-primary">بوابة الطالب</a>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#mySlider" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">السابق</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#mySlider" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">التالي</span>
+  </button>
+</div>
+
+<div class="container">
+
+<a href="about.html" class="card-link">
+  <div class="card">
+    <div class="icon">🏫</div>
+    <h1>عن المدرسة</h1>
+    <p>مدرسة تعليمية تهدف إلى بناء جيل واعٍ ومتميز، من خلال بيئة تعليمية آمنة وتعليم حديث يركز على القيم والمعرفة</p>
+  </div>
+</a>
+
+<a href="student.html" class="card-link">
+  <div class="card">
+    <div class="icon">👤</div>
+    <h1>بوابة الطالب</h1>
+    <p>بوابة الطالب تتيح للطلاب الاطلاع على بياناتهم الأكاديمية، والجداول، والنتائج بسهولة وأمان.</p>
+  </div>
+</a>  
+
+<a href="parent.html" class="card-link">
+  <div class="card">
+    <div class="icon">👪</div>
+    <h1>بوابة ولي الامر</h1>
+    <p>بوابة ولي الأمر تتيح متابعة مستوى الطالب الأكاديمي، والاطلاع على النتائج والجداول والتواصل مع المدرسة بكل سهولة.</p>
+  </div>
+</a>  
+
+<a href="admin.html" class="card-link">
+  <div class="card">
+    <div class="icon">📝</div>
+    <h1>بوابة الموظف</h1>
+    <p>بوابة الموظف تتيح للكوادر التعليمية والإدارية متابعة بياناتهم الوظيفية والاطلاع على الجداول والإشعارات بكل سهولة</p>
+  </div>
+</a>  
+
+<a href="schedule.html" class="card-link">
+  <div class="card">
+    <div class="icon">📅</div>
+    <h1>الجداول الدراسية</h1>
+    <p>تتيح صفحة الجداول الاطلاع على جداول الحصص والمواعيد الدراسية بشكل منظم وسهل.</p>
+  </div>
+</a>  
+
+<a href="news.html" class="card-link">
+  <div class="card">
+    <div class="icon">📰</div>
+    <h1>الأخبار</h1>
+    <p>نعرض في هذه الصفحة آخر أخبار المدرسة وأنشطتها وفعالياتها، حرصًا على إبقاء الطلاب وأولياء الأمور على اطلاع دائم بكل ما هو جديد.</p>
+  </div>
+</a>  
+ 
+<a href="activities.html" class="card-link">
+  <div class="card">
+    <div class="icon">⚽</div>
+    <h1>الأنشطة</h1>
+    <p>تهتم المدرسة بالأنشطة الطلابية التي تنمّي مهارات الطلاب وتدعم مواهبهم، وتسهم في بناء شخصية متوازنة وتعزيز روح التعاون والإبداع.</p>
+  </div>
+</a>  
+ 
+<a href="contact.html" class="card-link">
+  <div class="card">
+    <div class="icon">📞</div>
+    <h1>التواصل</h1>
+    <p>نرحب بتواصلكم معنا للإجابة على استفساراتكم واستقبال مقترحاتكم، ونسعد بخدمتكم في أي وقت.</p>
+  </div>
+
+</a>  
+</div>
+  <button class="announce-undo" aria-label="عرض الإعلان" hidden>عرض الإعلان</button>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Announcement close/open with slide animation and persistence
+    document.addEventListener('DOMContentLoaded', function () {
+      var ann = document.querySelector('.announcement');
+      var closeBtn = document.querySelector('.announce-close');
+      var undoBtn = document.querySelector('.announce-undo');
+      function hideAnnouncement(store) {
+        if (!ann) return;
+        ann.classList.add('hidden');
+        if (undoBtn) { undoBtn.hidden = false; undoBtn.focus(); }
+        if (store) try { localStorage.setItem('announceHidden', '1'); } catch (e) {}
+      }
+      function showAnnouncement(store) {
+        if (!ann) return;
+        ann.classList.remove('hidden');
+        if (undoBtn) { undoBtn.hidden = true; }
+        if (store) try { localStorage.removeItem('announceHidden'); } catch (e) {}
+      }
+      // Initialize from storage
+      try {
+        var hidden = localStorage.getItem('announceHidden');
+        if (hidden) {
+          if (ann) ann.classList.add('hidden');
+          if (undoBtn) undoBtn.hidden = false;
+        }
+      } catch (e) { /* ignore */ }
+      if (closeBtn) closeBtn.addEventListener('click', function () { hideAnnouncement(true); });
+      if (undoBtn) undoBtn.addEventListener('click', function () { showAnnouncement(true); ann && ann.scrollIntoView({behavior:'smooth'}); });
+
+      // --- Color modal and persistence (background + primary) ---
+      var openColorBtn = document.getElementById('openColorModal');
+      var modalBgPicker = document.getElementById('modalBgPicker');
+      var modalPrimaryPicker = document.getElementById('modalPrimaryPicker');
+      var saveColorBtn = document.getElementById('saveColorBtn');
+      var resetColorBtn = document.getElementById('resetColorBtn');
+
+      // Helper: darken hex color by percentage
+      function darkenHex(hex, percent){
+        var c = hex.replace('#','');
+        var num = parseInt(c,16);
+        var r = (num >> 16) & 0xFF;
+        var g = (num >> 8) & 0xFF;
+        var b = num & 0xFF;
+        r = Math.max(0, Math.min(255, Math.floor(r * (1 - percent))));
+        g = Math.max(0, Math.min(255, Math.floor(g * (1 - percent))));
+        b = Math.max(0, Math.min(255, Math.floor(b * (1 - percent))));
+        return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+      }
+
+      // Apply saved colors on page load (site-wide)
+      try {
+        var savedBg = localStorage.getItem('bgColor');
+        var savedPrimary = localStorage.getItem('primaryColor');
+        if (savedBg) document.documentElement.style.setProperty('--site-bg', savedBg);
+        if (savedPrimary) {
+          document.documentElement.style.setProperty('--site-primary', savedPrimary);
+          document.documentElement.style.setProperty('--site-primary-dark', darkenHex(savedPrimary, 0.12));
+        }
+      } catch (e) { /* ignore */ }
+
+      // Show modal (Bootstrap)
+      var colorModalEl = document.getElementById('colorModal');
+      var colorModal = colorModalEl ? new bootstrap.Modal(colorModalEl) : null;
+
+      if (openColorBtn) openColorBtn.addEventListener('click', function () {
+        var currentBg = (localStorage.getItem('bgColor')) || '#ffffff';
+        var currentPrimary = (localStorage.getItem('primaryColor')) || getComputedStyle(document.documentElement).getPropertyValue('--site-primary').trim() || '#0d6efd';
+        if (modalBgPicker) modalBgPicker.value = currentBg;
+        if (modalPrimaryPicker) modalPrimaryPicker.value = currentPrimary;
+        colorModal && colorModal.show();
+      });
+
+      if (saveColorBtn) saveColorBtn.addEventListener('click', function () {
+        var bgVal = modalBgPicker ? modalBgPicker.value : null;
+        var primaryVal = modalPrimaryPicker ? modalPrimaryPicker.value : null;
+        if (bgVal) { document.documentElement.style.setProperty('--site-bg', bgVal); try { localStorage.setItem('bgColor', bgVal); } catch(e){} }
+        if (primaryVal) {
+          document.documentElement.style.setProperty('--site-primary', primaryVal);
+          document.documentElement.style.setProperty('--site-primary-dark', darkenHex(primaryVal, 0.12));
+          try { localStorage.setItem('primaryColor', primaryVal); } catch(e){}
+        }
+      });
+
+      if (resetColorBtn) resetColorBtn.addEventListener('click', function () {
+        document.body.style.backgroundColor = '';
+        document.documentElement.style.removeProperty('--site-primary');
+        document.documentElement.style.removeProperty('--site-primary-dark');
+        try { localStorage.removeItem('bgColor'); localStorage.removeItem('primaryColor'); } catch (e) {}
+      });
+    });
+  </script>
+<footer>
+    <div class="footer-container">
+        <h3>مدرستي</h3>
+        <p>نهدف إلى تقديم أفضل الخدمات التعليمية للطلاب.</p>
+
+        <ul class="footer-links">
+            <li><a href="about.html">عن المدرسة</a></li>
+            <li><a href="contact.html">التواصل</a></li>
+            
+        </ul>
+
+        <p class="copy">© 2025 جميع الحقوق محفوظة</p>
+    </div>
+   
+</footer>
+</body>
+</html>
